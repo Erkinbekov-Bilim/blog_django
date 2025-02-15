@@ -1,0 +1,25 @@
+Post.objects.all() - получение всех объектов
+
+Post.objects.get(id=1) - получение одного объекта по уникальному идентификатору
+
+Post.objects.filter(id=1) - получение объектов по не уникальному идентификатору (фильтрация)
+
+Post.objects.filter(id=1).first() - получение первого объекта
+
+Post.objects.filter(id=1).last() - получение последнего объекта
+
+Post.objects.filter(id=1).exists() - проверка наличия объекта
+
+Post.objects.filter(id=1).count() - получение количества объектов
+
+Post.objects.filter(id=1).delete() - удаление объекта
+
+Post.objects.filter(id=1).update(title='New title') - обновление объекта
+
+Post.objects.filter(id=1).update(title='New title', content='New content') - обновление объекта
+
+Post.objects.create(title='New title', content='New content') - создание объекта
+
+
+multipart/form-data - для поддержки загрузки файлов, разных типов данных
+

@@ -10,14 +10,18 @@
 
 </header>
     {% block content %}
-    <div class="card" style="width: 18rem;">
-      <div class="card-body">
-        <h5 class="card-title">{{ post.title }}</h5>
-        <h6 class="card-subtitle mb-2 text-body-secondary">{{ post.content }}</h6>
-        <p class="card-text">{{ post.rate }}</p>
-<!--        <a href="#" class="card-link">Another link</a>-->
-      </div>
-    </div>
+        <div class="card" style="width: 18rem;">
+          {% if post.image %}
+          <img src="{{ post.image.url }}" class="card-img-top" alt="...">
+          {% else %}
+          <img src="{% static 'placeholder.png' %}" class="card-img-top" alt="...">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{ post.content }}</h6>
+            <p class="card-text">{{ post.rate }}</p>
+          </div>
+        </div>
     {% endblock %}
 </body>
 </html>

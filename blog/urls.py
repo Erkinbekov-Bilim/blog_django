@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 
 from blog import settings
-from posts.views import test_view, html_view, post_list_view, post_detail_view
+from posts.views import test_view, html_view, post_list_view, post_detail_view, post_create_view, post_create_django_view
 
 from django.conf.urls.static import static
 
@@ -27,6 +27,8 @@ urlpatterns = ([
     path('test/', test_view),
     path('posts/', post_list_view),
     path('posts/<int:id>/', post_detail_view),
+    path("posts/create/", post_create_view),
+    path("posts/create/django/", post_create_django_view),
     path('', html_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 
