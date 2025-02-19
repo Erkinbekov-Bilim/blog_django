@@ -1,5 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from posts.forms import PostCreateForm
+from django.contrib.auth.decorators import login_required
 from .models import Post
 import random
 
@@ -18,6 +19,7 @@ def html_view(request):
         return HttpResponse("Hello World")
 
 
+@login_required(login_url="/login/")
 def post_list_view(request):
     if request.method == "GET":
         posts = Post.objects.all()
@@ -28,6 +30,7 @@ def post_list_view(request):
     else:
         return HttpResponse("Hello World")
 
+@login_required(login_url="/login/")
 def post_detail_view(request, id):
     post = Post.objects.get(id=id)
     context = {
@@ -36,6 +39,7 @@ def post_detail_view(request, id):
     return render(request, "posts/post_detail.html", context = context)
 
 
+@login_required(login_url="/login/")
 def post_create_view(request):
     if request.method == "GET":
         return render(request, "posts/post_create.html")
@@ -51,6 +55,7 @@ def post_create_view(request):
             return HttpResponse("Post not created")
 
 
+@login_required(login_url="/login/")
 def post_create_django_view(request):
     if request.method == "GET":
         form = PostCreateForm()

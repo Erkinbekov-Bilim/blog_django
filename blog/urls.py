@@ -19,7 +19,7 @@ from django.urls import path
 
 from blog import settings
 from posts.views import test_view, html_view, post_list_view, post_detail_view, post_create_view, post_create_django_view
-
+from users.views import register_view, login_view, logout_view
 from django.conf.urls.static import static
 
 urlpatterns = ([
@@ -29,6 +29,9 @@ urlpatterns = ([
     path('posts/<int:id>/', post_detail_view),
     path("posts/create/", post_create_view),
     path("posts/create/django/", post_create_django_view),
+    path("register/", register_view),
+    path("login/", login_view),
+    path("logout/", logout_view),
     path('', html_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 
