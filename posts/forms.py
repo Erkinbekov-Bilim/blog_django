@@ -1,4 +1,5 @@
 from django import forms
+from posts.models import Category, Tag
 
 
 class PostCreateForm(forms.Form):
@@ -21,3 +22,20 @@ class PostCreateForm(forms.Form):
         if title and title.lower() == "title":
             raise forms.ValidationError("'title' is not a valid title")
         return title
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(required=False ,max_length=100, widget=forms.TextInput(attrs={"placeholder": "Search"}))
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="All", required=False)
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
+    orderings = (
+        ("title", "По заголовку"), # ascending - по возрастанию
+        ("-title", "По заголовку в обратном порядке"), # descending - по убыванию
+        ("rate", "По рейтингу"),
+        ("-rate", "По рейтингу в обратном порядке"),
+        ("created_at", "По дате создания"),
+        ("-created_at", "По дате создания в обратном порядке"),
+    )
+
+    ordering = forms.ChoiceField(choices=orderings, widget=forms.Select(attrs={"class": "form-select"}))

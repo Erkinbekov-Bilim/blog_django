@@ -12,6 +12,12 @@
 
 </header>
     {% block content %}
+
+    <form method="get" enctype="multipart/form-data" action="/posts/">
+        {{form.as_p}}
+        <button type="submit">Search</button>
+    </form>
+
     {% for post in posts %}
 
         <div class="card" style="width: 18rem;">
@@ -29,6 +35,15 @@
         </div>
 
     {% endfor %}
+
+    <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 20px;">
+        {% for i in max_pages %}
+            <a href="/posts/?page={{ i }}" class="btn btn-primary">
+                {{ i }}
+            </a>
+        {% endfor %}
+    </div>
+
     {% endblock %}
 </body>
 </html>
