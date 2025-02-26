@@ -1,0 +1,47 @@
+{% extends "main.html" %}
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <img src= "{{ user.profile.avatar.url }}" alt="Profile image" style="width: 200px; height: 200px; border-radius: 50%;">
+        <h2>{{ user.username }}</h2>
+        <h3>{{ user.first_name }}</h3>
+        <h4>{{ user.last_name }}</h4>
+        <h5>{{ user.email }}</h5>
+        <h6>{{ user.profile.age }}</h6>
+    </div>
+
+    {% for post in posts %}
+    <div class="card" style="width: 18rem; display: flex; justify-content: center; align-items: center; margin: 20px;">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" class="card-img-top" style="width: 18rem; height: 200px; background-size: cover;" alt="...">
+        {% else %}
+            <img src="{% static 'placeholder.png' %}" class="card-img-top" style="width: 18rem; height: 200px;" alt="...">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <p class="card-text">{{ post.content }}</p>
+            <p class="card-text">{{ post.rate }}</p>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-direction: column; gap: 15px;">
+                <a href="/posts/{{ post.id }}" class="btn btn-primary" style="width: 100%;">Детальный просмотр</a>
+                {% if post.author == user %}
+                <a href="/posts/{{ post.id }}/update" class="btn btn-primary" style="width: 100%;">Редактировать</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endblock %}
+</body>
+</html>

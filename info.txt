@@ -22,4 +22,3 @@ Post.objects.create(title='New title', content='New content') - создание
 
 
 multipart/form-data - для поддержки загрузки файлов, разных типов данных
-

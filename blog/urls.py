@@ -18,20 +18,29 @@ from django.contrib import admin
 from django.urls import path
 
 from blog import settings
-from posts.views import test_view, html_view, post_list_view, post_detail_view, post_create_view, post_create_django_view
-from users.views import register_view, login_view, logout_view
+from posts.views import (test_view, html_view, post_list_view,
+                         post_detail_view, post_create_view,
+                         post_create_django_view, post_update_view, TestView, PostListView, PostDetailView, PostCreateView)
+
+from users.views import register_view, login_view, logout_view, profile_view
 from django.conf.urls.static import static
 
 urlpatterns = ([
-    path('admin/', admin.site.urls),
-    path('test/', test_view),
-    path('posts/', post_list_view),
-    path('posts/<int:id>/', post_detail_view),
+    path("posts/create/class/", PostCreateView.as_view()),
+    path("posts/<int:post_id>/class/", PostDetailView.as_view()),
+    path("posts/class/", PostListView.as_view()),
+    path("test/class/", TestView.as_view()),
+    path("admin/", admin.site.urls),
+    path("test/", test_view),
+    path("posts/", post_list_view),
+    path("posts/<int:post_id>/", post_detail_view),
     path("posts/create/", post_create_view),
     path("posts/create/django/", post_create_django_view),
     path("register/", register_view),
     path("login/", login_view),
     path("logout/", logout_view),
+    path("profile/", profile_view),
+    path("posts/<int:post_id>/update/", post_update_view),
     path('', html_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))
 

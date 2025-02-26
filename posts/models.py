@@ -1,7 +1,7 @@
 from tkinter.constants import CASCADE
 
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 class Category(models.Model):
@@ -17,6 +17,7 @@ class Tag(models.Model):
         return self.name
 
 class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="posts")
     image = models.ImageField(null=True, blank=True)
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=1000)

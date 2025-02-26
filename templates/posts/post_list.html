@@ -12,8 +12,7 @@
 
 </header>
     {% block content %}
-
-    <form method="get" enctype="multipart/form-data" action="/posts/">
+    <form method="get" enctype="multipart/form-data" action="{% if request.path == '/posts/' %}/posts{% elif request.path == '/posts/class/' %}/posts/class{% else %}/posts/{% endif %}/">
         {{form.as_p}}
         <button type="submit">Search</button>
     </form>

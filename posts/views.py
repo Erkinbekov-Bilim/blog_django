@@ -1,9 +1,13 @@
+from re import search
+
 from django.shortcuts import render, HttpResponse, redirect
 from django.template.defaultfilters import title
 from unicodedata import category
 
-from posts.forms import PostCreateForm, SearchForm
+from posts.forms import PostCreateForm, SearchForm, PostUpdateForm
 from django.contrib.auth.decorators import login_required
+from django.views import View
+from django.views.generic import ListView, DetailView, CreateView
 from django.db.models import Q
 from .models import Post
 import random
@@ -37,6 +41,10 @@ def html_view(request):
         return render(request, "main.html")
     else:
         return HttpResponse("Hello World")
+
+class TestView(View):
+    def get(self, request):
+        return HttpResponse(f"Hello World {random.randint(0, 100)}")
 
 
 @login_required(login_url="/login/")
@@ -95,13 +103,60 @@ def post_list_view(request):
     else:
         return HttpResponse("Hello World")
 
+
+class PostListView(ListView):
+    model = Post
+    template_name = "posts/post_list.html"
+    context_object_name = "posts"
+    paginate_by = 3
+
+    def get_queryset(self):
+        query_params = self.request.GET
+        queryset = Post.objects.all()
+
+        search = query_params.get("search")
+        category_id = query_params.get("category")
+        tags = query_params.getlist("tags")
+        ordering = query_params.get("ordering")
+
+        if search:
+            queryset = queryset.filter(Q(title__icontains=search) | Q(content__icontains=search))
+
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
+
+        if tags:
+            tags = [int(tag) for tag in tags]
+            queryset = queryset.filter(tags__id__in=tags)
+
+        if ordering:
+            queryset = queryset.order_by(ordering)
+
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context["form"] = SearchForm()
+        return context
+
+
+
 @login_required(login_url="/login/")
-def post_detail_view(request, id):
-    post = Post.objects.get(id=id)
-    context = {
-        "post": post
-    }
-    return render(request, "posts/post_detail.html", context = context)
+def post_detail_view(request, post_id):
+    if request.method == "GET":
+        post = Post.objects.get(id=post_id)
+        context = {
+            "post": post
+        }
+        return render(request, "posts/post_detail.html", context = context)
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = "posts/post_detail.html"
+    context_object_name = "post"
+    pk_url_kwarg = "post_id"
+
 
 
 @login_required(login_url="/login/")
@@ -118,6 +173,12 @@ def post_create_view(request):
             return redirect("/posts/")
         else:
             return HttpResponse("Post not created")
+
+class PostCreateView(CreateView):
+    model = Post
+    success_url = "/posts/class/"
+    form_class = PostUpdateForm
+    template_name = "posts/post_create.html"
 
 
 @login_required(login_url="/login/")
@@ -142,3 +203,26 @@ def post_create_django_view(request):
             return redirect("/posts/")
         else:
             return HttpResponse("Post not created")
+
+
+@login_required(login_url="/login/")
+def post_update_view(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id, author=request.user)
+    except Post.DoesNotExist:
+        return HttpResponse("Post not found")
+
+    if request.method == "GET":
+        form = PostUpdateForm(instance=post)
+        return render(request, "posts/post_update.html", context={"form": form})
+
+    if request.method == "POST":
+        form = PostUpdateForm(request.POST, request.FILES, instance=post)
+        if not form.is_valid():
+            return render(request, "posts/post_update.html", context={"form": form})
+        elif form.is_valid():
+            form.save()
+            return redirect("/profile/")
+        else:
+            return HttpResponse("Post not updated")
+
